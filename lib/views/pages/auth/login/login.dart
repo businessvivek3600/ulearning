@@ -83,10 +83,10 @@ class _LoginPageState extends State<LoginPage> {
       infoToast('Please agree to the terms and conditions');
       return;
     }
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
     if (method is EmailAuth) {
+      if (!formKey.currentState!.validate()) {
+        return;
+      }
       if (rememberMe.value) TextInput.finishAutofillContext();
       formKey.currentState!.save();
     }
