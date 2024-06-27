@@ -45,18 +45,18 @@ class LoginRepo {
       }
     } on FirebaseAuthException catch (e) {
       logg('Login with email failed', error: e, name: 'LoginRepo');
-      if (e.code == 'invalid-credential') {
-        UserCredential userCredential = await FirebaseAuth.instance
-            .createUserWithEmailAndPassword(email: email, password: password);
+      // if (e.code == 'invalid-credential') {
+      //   UserCredential userCredential = await FirebaseAuth.instance
+      //       .createUserWithEmailAndPassword(email: email, password: password);
 
-        /// Send confirmation email
-        await userCredential.user!.sendEmailVerification();
-        return (
-          false,
-          <String, dynamic>{},
-          'A verification email has been sent to your email address. Please verify your email address to continue.',
-        );
-      }
+      //   /// Send confirmation email
+      //   await userCredential.user!.sendEmailVerification();
+      //   return (
+      //     false,
+      //     <String, dynamic>{},
+      //     'A verification email has been sent to your email address. Please verify your email address to continue.',
+      //   );
+      // }
 
       return (false, <String, dynamic>{}, getFirebaseExceptionMessage(e));
     } catch (e) {

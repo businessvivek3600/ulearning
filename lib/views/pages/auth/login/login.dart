@@ -86,9 +86,10 @@ class _LoginPageState extends State<LoginPage> {
     if (!formKey.currentState!.validate()) {
       return;
     }
-    formKey.currentState!.save();
-    TextInput.finishAutofillContext();
-
+    if (method is EmailAuth) {
+      if (rememberMe.value) TextInput.finishAutofillContext();
+      formKey.currentState!.save();
+    }
     context.read<LoginBloc>().add(LoginAttemptEvent(method));
   }
 

@@ -49,8 +49,8 @@ class MyApp extends StatelessWidget {
                     return route(const HomePage(), settings: settings);
                   case LoginPage.routeName:
                     return route(const LoginPage(), settings: settings);
-                  case Signup.routeName:
-                    return route(const Signup(), settings: settings);
+                  case SignUpPage.routeName:
+                    return route(const SignUpPage(), settings: settings);
                   default:
                     return route(const LoginPage(), settings: settings);
                 }
