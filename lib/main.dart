@@ -4,9 +4,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:ulearning_app/blocs/index.dart';
 import 'package:ulearning_app/firebase_options.dart';
 
+import 'views/pages/auth/login/auth_page.dart';
+import 'repository/auth_repository.dart';
 import 'views/pages/index.dart';
 
 void main() async {
@@ -24,40 +27,48 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [...Blocs.blocs],
-      child: ScreenUtilInit(
-        builder: (context, child) {
-          return BlocBuilder<ThemeBloc, ThemeState>(
+    return MultiProvider(
+      providers: [
+        Provider<AuthRepository>(create: (_) => AuthRepository()),
+      ],
+      child: MultiBlocProvider(
+        providers: [...Blocs.blocs],
+        child: ScreenUtilInit(
+          builder: (context, child) {
+            return BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, themeState) {
-            return MaterialApp(
-              title: 'Ulearning App',
-              debugShowCheckedModeBanner: false,
-              themeAnimationCurve: Curves.fastLinearToSlowEaseIn,
-              themeMode: themeState.themeMode,
-              theme: themeState.themeData,
-              navigatorObservers: [FlutterSmartDialog.observer],
-              builder: FlutterSmartDialog.init(),
-              initialRoute: LoginPage.routeName,
-              onGenerateRoute: (settings) {
-                switch (settings.name) {
-                  case Splash.routeName:
-                    return route(const Splash(), settings: settings);
-                  case Welcome.routeName:
-                    return route(const Welcome(), settings: settings);
-                  case HomePage.routeName:
-                    return route(const HomePage(), settings: settings);
-                  case LoginPage.routeName:
-                    return route(const LoginPage(), settings: settings);
-                  case SignUpPage.routeName:
-                    return route(const SignUpPage(), settings: settings);
-                  default:
-                    return route(const LoginPage(), settings: settings);
-                }
+                return MaterialApp(
+                  title: 'Ulearning App',
+                  debugShowCheckedModeBanner: false,
+                  themeAnimationCurve: Curves.fastLinearToSlowEaseIn,
+                  themeMode: themeState.themeMode,
+                  theme: themeState.themeData,
+                  navigatorObservers: [FlutterSmartDialog.observer],
+                  builder: FlutterSmartDialog.init(),
+                  initialRoute: LoginPage.routeName,
+                  onGenerateRoute: (settings) {
+                    switch (settings.name) {
+                      case Splash.routeName:
+                        return route(const Splash(), settings: settings);
+                      case Welcome.routeName:
+                        return route(const Welcome(), settings: settings);
+                      case HomePage.routeName:
+                        return route(const HomePage(), settings: settings);
+                      case LoginPage.routeName:
+                        return route(const LoginPage(), settings: settings);
+                      case SignUpPage.routeName:
+                        return route(const SignUpPage(), settings: settings);
+                      case AuthPage.routeName:
+                        return route(const AuthPage(), settings: settings);
+                      default:
+                        return route(const LoginPage(), settings: settings);
+                    }
+                  },
+                );
               },
             );
-          });
-        },
+          },
+        ),
       ),
     );
   }

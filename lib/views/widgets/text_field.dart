@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ulearning_app/utils/extentions/index.dart';
 
-class MyTextTheme extends StatefulWidget {
+class MyTextField extends StatefulWidget {
   final TextEditingController? controller;
   final ValueChanged<String>? onChanged;
   final String? label;
@@ -20,7 +20,7 @@ class MyTextTheme extends StatefulWidget {
   final Function(String)? onSubmit;
   final List<String> autofillHints;
 
-  const MyTextTheme({
+  const MyTextField({
     super.key,
     this.controller,
     this.onChanged,
@@ -42,10 +42,10 @@ class MyTextTheme extends StatefulWidget {
   });
 
   @override
-  State<MyTextTheme> createState() => _MyTextThemeState();
+  State<MyTextField> createState() => _MyTextFieldState();
 }
 
-class _MyTextThemeState extends State<MyTextTheme> {
+class _MyTextFieldState extends State<MyTextField> {
   ValueNotifier<bool> obscure = ValueNotifier<bool>(false);
   late TextEditingController _controller;
 

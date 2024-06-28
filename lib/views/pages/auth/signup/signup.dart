@@ -8,6 +8,7 @@ import 'package:ulearning_app/utils/extentions/index.dart';
 import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';
 
+import '../../../../blocs/auth/providers/providers.dart';
 import '../../../widgets/index.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -22,35 +23,17 @@ class _SignUpPageState extends State<SignUpPage> {
   ValueNotifier<bool> rememberMe = ValueNotifier(false);
   ValueNotifier<bool> termsCondition = ValueNotifier(false);
   final formKey = GlobalKey<FormState>();
-  late LoginBloc bloc;
-  @override
-  void initState() {
-    super.initState();
-    bloc = context.read<LoginBloc>();
-    bloc.add(LoginInitialEvent());
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    rememberMe.dispose();
-    termsCondition.dispose();
-    bloc.add(LoginInitialEvent());
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginBloc, LoginState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is LoginLoading) {
-          showLoading();
-        } else {
-          hideLoading();
-          if (state is LoginSuccess) {
-            successToast(state.message ?? 'Sign up success');
-          } else if (state is LoginFailure) {
-            errorToast(state.message ?? 'Sign up failed');
-          }
+        logg('AuthBloc listener ${state.status} : ${state.message}',
+            name: 'SignUpPage');
+        if (state.status == AuthStatus.success) {
+          successToast(state.message ?? "Success");
+        } else if (state.status == AuthStatus.failure) {
+          errorToast(state.message ?? "Error");
         }
       },
       builder: (context, state) {
@@ -84,10 +67,18 @@ class _SignUpPageState extends State<SignUpPage> {
               Column(
                 children: [
                   _form(state).expand(),
-                  ElevatedButton(
-                          onPressed: () => _signUp(EmailAuth(
-                              email: state.email, password: state.password)),
-                          child: const Text('Sign Up'))
+                  ElevatedButton.icon(
+                          onPressed: state.status == AuthStatus.loading
+                              ? null
+                              : () => _signUp(EmailAuth(
+                                  email: state.email,
+                                  password: state.password)),
+                          icon: state.status == AuthStatus.loading
+                              ? const CircularProgressIndicator(
+                                      color: Colors.white, strokeWidth: 1)
+                                  .sized(25)
+                              : null,
+                          label: const Text('Sign Up'))
                       .expand()
                       .row(),
                   OutlinedButton(
@@ -104,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _signUp(LoginMethod method) async {
+  void _signUp(AuthProviderInterface method) async {
     if (!termsCondition.value) {
       infoToast('Please agree to the terms and conditions');
       return;
@@ -116,20 +107,20 @@ class _SignUpPageState extends State<SignUpPage> {
       if (rememberMe.value) TextInput.finishAutofillContext();
       formKey.currentState!.save();
     }
-    context.read<LoginBloc>().add(RegisterAttemptEvent(method));
+    context.read<AuthBloc>().add(AuthRegisterSubmitted(method));
   }
 
-  Widget _form(LoginState state) {
+  Widget _form(AuthState state) {
     return SingleChildScrollView(
       child: AutofillGroup(
         child: Form(
           key: formKey,
           child: Column(
             children: [
-              MyTextTheme(
+              MyTextField(
                 controller: TextEditingController(),
                 onChanged: (value) =>
-                    context.read<LoginBloc>().add(LoginEmailChanged(value)),
+                    context.read<AuthBloc>().add(AuthEmailChanged(value)),
                 label: 'Email',
                 prefix: const Icon(Icons.email),
                 isPassword: false,
@@ -143,10 +134,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 ],
               ),
               const SizedBox(height: 20),
-              MyTextTheme(
+              MyTextField(
                 controller: TextEditingController(),
                 onChanged: (value) =>
-                    context.read<LoginBloc>().add(LoginPasswordChanged(value)),
+                    context.read<AuthBloc>().add(AuthPasswordChanged(value)),
                 onSubmit: (p0) => _signUp(
                     EmailAuth(email: state.email, password: state.password)),
                 label: 'Password',

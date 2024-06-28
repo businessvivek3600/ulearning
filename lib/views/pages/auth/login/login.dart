@@ -9,6 +9,7 @@ import 'package:ulearning_app/utils/extentions/index.dart';
 import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';
 
+import '../../../../blocs/auth/providers/providers.dart';
 import '../../../widgets/index.dart';
 
 class LoginPage extends StatefulWidget {
@@ -25,17 +26,15 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<LoginBloc, LoginState>(
+    return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is LoginLoading) {
-          showLoading();
-        } else {
-          hideLoading();
-          if (state is LoginSuccess) {
-            successToast(state.message ?? 'Login success');
-          } else if (state is LoginFailure) {
-            errorToast(state.message ?? 'Login failed');
-          }
+        logg('AuthBloc listener ${state.status} : ${state.message}',
+            name: 'LoginPage');
+        if (state.status == AuthStatus.success) {
+          logg('User is logged in ${state.user?.toMap()}');
+          successToast(state.message ?? "Success");
+        } else if (state.status == AuthStatus.failure) {
+          errorToast(state.message ?? "Error");
         }
       },
       builder: (context, state) {
@@ -60,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                       style: context.textTheme.bodySmall
                           ?.copyWith(color: Colors.grey)),
                   50.height,
-                  _form(state).scrollable().expand(),
+                  _form(context, state).scrollable().expand(),
                   ElevatedButton(
                           onPressed: () => _login(EmailAuth(
                               email: state.email, password: state.password)),
@@ -82,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void _login(LoginMethod method) async {
+  void _login(AuthProviderInterface method) async {
     if (!termsCondition.value) {
       infoToast('Please agree to the terms and conditions');
       return;
@@ -94,19 +93,19 @@ class _LoginPageState extends State<LoginPage> {
       if (rememberMe.value) TextInput.finishAutofillContext();
       formKey.currentState!.save();
     }
-    context.read<LoginBloc>().add(LoginAttemptEvent(method));
+    context.read<AuthBloc>().add(AuthLoginSubmitted(method));
   }
 
-  Widget _form(LoginState state) {
+  Widget _form(BuildContext context, AuthState state) {
     return AutofillGroup(
       child: Form(
         key: formKey,
         child: Column(
           children: [
-            MyTextTheme(
+            MyTextField(
               controller: TextEditingController(),
               onChanged: (value) =>
-                  context.read<LoginBloc>().add(LoginEmailChanged(value)),
+                  context.read<AuthBloc>().add(AuthEmailChanged(value)),
               label: 'Email',
               prefix: const Icon(Icons.email),
               isPassword: false,
@@ -120,10 +119,10 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
             const SizedBox(height: 20),
-            MyTextTheme(
+            MyTextField(
               controller: TextEditingController(),
               onChanged: (value) =>
-                  context.read<LoginBloc>().add(LoginPasswordChanged(value)),
+                  context.read<AuthBloc>().add(AuthPasswordChanged(value)),
               onSubmit: (p0) => _login(
                   EmailAuth(email: state.email, password: state.password)),
               label: 'Password',
@@ -210,8 +209,10 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         Image.asset(MyPng.googleLogo, width: 30.w)
             .onTap(() => _login(GoogleAuth())),
-        Image.asset(MyPng.appleLogo, width: 30.w).onTap(() {}),
-        Image.asset(MyPng.facebookLogo, width: 30.w).onTap(() {}),
+        Image.asset(MyPng.appleLogo, width: 30.w)
+            .onTap(() => _login(AppleAuth())),
+        Image.asset(MyPng.facebookLogo, width: 30.w)
+            .onTap(() => _login(FacebookAuth())),
       ],
     );
   }

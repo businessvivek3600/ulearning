@@ -1,20 +1,20 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ulearning_app/utils/index.dart';
 
+import 'auth/auth_bloc.dart';
 import 'signup/signup_bloc.dart';
-import 'login/login_bloc.dart';
 import 'welcome/welcome_bloc.dart';
 import 'theme/theme_bloc.dart';
 
-export 'login/login_bloc.dart';
+export 'auth/auth_bloc.dart';
 export 'signup/signup_bloc.dart';
 export 'welcome/welcome_bloc.dart';
 export 'theme/theme_bloc.dart';
 
 class Blocs {
   static List<BlocProvider> get blocs => [
+        BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
         BlocProvider<ThemeBloc>(create: (context) => ThemeBloc()),
-        BlocProvider<LoginBloc>(create: (context) => LoginBloc()),
         BlocProvider<SignupBloc>(create: (context) => SignupBloc()),
         BlocProvider<WelcomeBloc>(create: (context) => WelcomeBloc()),
       ];
