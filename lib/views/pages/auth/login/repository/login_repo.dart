@@ -65,6 +65,40 @@ class LoginRepo {
     return (false, <String, dynamic>{}, 'Something went wrong');
   }
 
+  Future<(bool, Map<String, dynamic>, String?)> registerWithCredentials(
+      String email, String password) async {
+    try {
+      var res = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      logg('Register with email ${res.additionalUserInfo?.profile}',
+          name: 'LoginRepo');
+      logg('Register with email ${res.additionalUserInfo?.username}',
+          name: 'LoginRepo');
+      logg('Register with email ${res.user?.displayName}', name: 'LoginRepo');
+      if (res.user != null) {
+        bool isNewUser = res.additionalUserInfo?.isNewUser ?? false;
+        return (
+          true,
+          SocialUser(
+            primaryId: res.user!.uid,
+            uid: res.user!.uid,
+            email: res.user!.email,
+            name: res.user!.displayName,
+            photoUrl: res.user!.photoURL,
+            phoneNumber: res.user!.phoneNumber,
+          ).toJson(),
+          isNewUser ? 'Welcome to uLearning 🙌' : "Welcome back",
+        );
+      }
+    } on FirebaseAuthException catch (e) {
+      logg('Login with email failed', error: e, name: 'LoginRepo');
+      return (false, <String, dynamic>{}, getFirebaseExceptionMessage(e));
+    } catch (e) {
+      logg('Login with email failed', error: e, name: 'LoginRepo');
+    }
+    return (false, <String, dynamic>{}, 'Something went wrong');
+  }
+
   Future<(bool, String?)> login(
     dynamic type, {
     String? email,
@@ -82,7 +116,6 @@ class LoginRepo {
         msg = result.$3;
       } else if (type is EmailAuth) {
         final result = await loginWithCredentials(email!, password!);
-        logg('Login with email $result', name: 'LoginRepo');
         data = result.$2;
         isSuccess = result.$1;
         msg = result.$3;
@@ -90,21 +123,47 @@ class LoginRepo {
         throw 'Invalid login type';
       }
       if (isSuccess && data.isNotEmpty) {
-        /// save user data to local storage
         logg('Login success $data', name: 'LoginRepo', error: data);
       } else {
-        /// show error message
         isSuccess = false;
       }
     } catch (e) {
-      /// show error message
       isSuccess = false;
       logg('Login failed', error: e, name: 'LoginRepo');
-    } finally {
-      /// hide loading
-    }
+    } finally {}
 
-    return (isSuccess, msg ?? 'error');
+    return (isSuccess, msg ?? 'Error while logging in');
+  }
+
+  Future<(bool, String?)> register(
+    dynamic type, {
+    String? email,
+    String? password,
+  }) async {
+    bool isSuccess = false;
+    Map<String, dynamic> data = {};
+    String? msg;
+    try {
+      /// show loading
+      if (type is SocialAuth) {
+        final result = await loginWithSocialAuth(type);
+        data = result.$2;
+        isSuccess = result.$1;
+        msg = result.$3;
+      } else if (type is EmailAuth) {
+        final result = await registerWithCredentials(email!, password!);
+        data = result.$2;
+        isSuccess = result.$1;
+        msg = result.$3;
+      } else {
+        throw 'Invalid signup type';
+      }
+    } catch (e) {
+      isSuccess = false;
+      logg('SignUp failed', error: e, name: 'LoginRepo');
+    } finally {}
+
+    return (isSuccess, msg ?? 'Error while registering');
   }
 }
 

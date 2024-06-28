@@ -290,4 +290,13 @@ class EmailAuth extends LoginMethod {
   Future<SocialAuthResult> loggout() {
     throw UnimplementedError();
   }
+
+  Future<void> register() async {
+    try {
+      await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+    } catch (e) {
+      logg('Register failed', error: e, name: 'EmailAuth');
+    }
+  }
 }

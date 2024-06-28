@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,14 +60,17 @@ class _LoginPageState extends State<LoginPage> {
                       style: context.textTheme.bodySmall
                           ?.copyWith(color: Colors.grey)),
                   50.height,
-                  _form(state).expand(),
+                  _form(state).scrollable().expand(),
                   ElevatedButton(
                           onPressed: () => _login(EmailAuth(
                               email: state.email, password: state.password)),
                           child: const Text('Log In'))
                       .expand()
                       .row(),
-                  OutlinedButton(onPressed: () {}, child: const Text('Sign Up'))
+                  OutlinedButton(
+                          onPressed: () =>
+                              pushTo(context, SignUpPage.routeName),
+                          child: const Text('Sign Up'))
                       .expand()
                       .row(),
                 ],
@@ -94,105 +98,107 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _form(LoginState state) {
-    return SingleChildScrollView(
-      child: AutofillGroup(
-        child: Form(
-          key: formKey,
-          child: Column(
-            children: [
-              MyTextTheme(
-                controller: TextEditingController(),
-                onChanged: (value) =>
-                    context.read<LoginBloc>().add(LoginEmailChanged(value)),
-                label: 'Email',
-                prefix: const Icon(Icons.email),
-                isPassword: false,
-                inputAction: TextInputAction.next,
-                keyboardType: TextInputType.emailAddress,
-                hint: 'Enter your email',
-                autofillHints: const [
-                  AutofillHints.email,
-                  AutofillHints.username,
-                  AutofillHints.newUsername,
-                ],
-              ),
-              const SizedBox(height: 20),
-              MyTextTheme(
-                controller: TextEditingController(),
-                onChanged: (value) =>
-                    context.read<LoginBloc>().add(LoginPasswordChanged(value)),
-                onSubmit: (p0) => _login(
-                    EmailAuth(email: state.email, password: state.password)),
-                label: 'Password',
-                prefix: const Icon(Icons.lock),
-                isPassword: true,
-                inputAction: TextInputAction.done,
-                keyboardType: TextInputType.visiblePassword,
-                hint: 'Enter your password',
-                autofillHints: const [
-                  AutofillHints.newPassword,
-                  AutofillHints.password,
-                ],
-              ),
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+    return AutofillGroup(
+      child: Form(
+        key: formKey,
+        child: Column(
+          children: [
+            MyTextTheme(
+              controller: TextEditingController(),
+              onChanged: (value) =>
+                  context.read<LoginBloc>().add(LoginEmailChanged(value)),
+              label: 'Email',
+              prefix: const Icon(Icons.email),
+              isPassword: false,
+              inputAction: TextInputAction.next,
+              keyboardType: TextInputType.emailAddress,
+              hint: 'Enter your email',
+              autofillHints: const [
+                AutofillHints.email,
+                AutofillHints.username,
+                AutofillHints.newUsername,
+              ],
+            ),
+            const SizedBox(height: 20),
+            MyTextTheme(
+              controller: TextEditingController(),
+              onChanged: (value) =>
+                  context.read<LoginBloc>().add(LoginPasswordChanged(value)),
+              onSubmit: (p0) => _login(
+                  EmailAuth(email: state.email, password: state.password)),
+              label: 'Password',
+              prefix: const Icon(Icons.lock),
+              isPassword: true,
+              inputAction: TextInputAction.done,
+              keyboardType: TextInputType.visiblePassword,
+              hint: 'Enter your password',
+              autofillHints: const [
+                AutofillHints.newPassword,
+                AutofillHints.password,
+              ],
+            ),
+            const SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    ValueListenableBuilder<bool>(
+                        valueListenable: rememberMe,
+                        builder: (context, value, child) {
+                          return Checkbox(
+                              value: value,
+                              onChanged: (value) {
+                                rememberMe.value = value!;
+                              });
+                        }),
+                    const Text('Remember me'),
+                  ],
+                ),
+                const Text('Forgot password?').onTap(() {}, radius: 3),
+              ],
+            ),
+            Row(
+              children: [
+                ValueListenableBuilder<bool>(
+                    valueListenable: termsCondition,
+                    builder: (context, value, child) {
+                      return Checkbox(
+                          value: value,
+                          onChanged: (value) {
+                            termsCondition.value = value!;
+                          });
+                    }),
+                RichText(
+                  text: TextSpan(
+                    text: 'I agree to the ',
+                    style: context.textTheme.bodySmall,
                     children: [
-                      ValueListenableBuilder<bool>(
-                          valueListenable: rememberMe,
-                          builder: (context, value, child) {
-                            return Checkbox(
-                                value: value,
-                                onChanged: (value) {
-                                  rememberMe.value = value!;
-                                });
-                          }),
-                      const Text('Remember me'),
+                      TextSpan(
+                        text: 'Terms and Conditions',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => launchTermsAndConditions(context),
+                      ),
+                      const TextSpan(text: ' and '),
+                      TextSpan(
+                        text: 'Privacy Policy',
+                        style: context.textTheme.bodySmall?.copyWith(
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () => launchPrivacyPolicy(context),
+                      ),
                     ],
                   ),
-                  const Text('Forgot password?').onTap(() {}, radius: 3),
-                ],
-              ),
-              Row(
-                children: [
-                  ValueListenableBuilder<bool>(
-                      valueListenable: termsCondition,
-                      builder: (context, value, child) {
-                        return Checkbox(
-                            value: value,
-                            onChanged: (value) {
-                              termsCondition.value = value!;
-                            });
-                      }),
-                  RichText(
-                    text: TextSpan(
-                      text: 'I agree to the ',
-                      style: context.textTheme.bodySmall,
-                      children: [
-                        TextSpan(
-                          text: 'Terms and Conditions',
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                        const TextSpan(text: ' and '),
-                        TextSpan(
-                          text: 'Privacy Policy',
-                          style: context.textTheme.bodySmall?.copyWith(
-                            color: Colors.blue,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ).expand(),
-                ],
-              ),
-            ],
-          ),
+                ).expand(),
+              ],
+            ),
+          ],
         ),
       ),
     );

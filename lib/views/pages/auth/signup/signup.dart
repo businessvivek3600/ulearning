@@ -1,9 +1,9 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ulearning_app/blocs/index.dart';
-import 'package:ulearning_app/constants/img_const.dart';
 import 'package:ulearning_app/utils/extentions/index.dart';
 import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';
@@ -22,6 +22,22 @@ class _SignUpPageState extends State<SignUpPage> {
   ValueNotifier<bool> rememberMe = ValueNotifier(false);
   ValueNotifier<bool> termsCondition = ValueNotifier(false);
   final formKey = GlobalKey<FormState>();
+  late LoginBloc bloc;
+  @override
+  void initState() {
+    super.initState();
+    bloc = context.read<LoginBloc>();
+    bloc.add(LoginInitialEvent());
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    rememberMe.dispose();
+    termsCondition.dispose();
+    bloc.add(LoginInitialEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LoginBloc, LoginState>(
@@ -31,9 +47,9 @@ class _SignUpPageState extends State<SignUpPage> {
         } else {
           hideLoading();
           if (state is LoginSuccess) {
-            successToast(state.message ?? 'Login success');
+            successToast(state.message ?? 'Sign up success');
           } else if (state is LoginFailure) {
-            errorToast(state.message ?? 'Login failed');
+            errorToast(state.message ?? 'Sign up failed');
           }
         }
       },
@@ -41,27 +57,42 @@ class _SignUpPageState extends State<SignUpPage> {
         return Scaffold(
           appBar: transparentAppBar(
             context,
-            title: 'Log In',
+            title: 'Sign Up',
             theme: true,
             height: 0,
             centerTile: true,
           ),
           body: Column(
             children: [
+              20.height,
+              RichText(
+                text: TextSpan(
+                  text: 'Sign up to get started',
+                  style: context.textTheme.titleLarge?.copyWith(),
+                  children: [
+                    TextSpan(
+                      text: ' with uLearning',
+                      style: context.textTheme.titleLarge?.copyWith(
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ],
+                ),
+              ).paddingSymmetric(horizontal: 20.w),
               10.height,
-              const Text('Sign Up'),
               Divider(color: Colors.grey[200], thickness: 1),
               Column(
                 children: [
-                  50.height,
                   _form(state).expand(),
                   ElevatedButton(
-                          onPressed: () => _login(EmailAuth(
+                          onPressed: () => _signUp(EmailAuth(
                               email: state.email, password: state.password)),
-                          child: const Text('Log In'))
+                          child: const Text('Sign Up'))
                       .expand()
                       .row(),
-                  OutlinedButton(onPressed: () {}, child: const Text('Sign Up'))
+                  OutlinedButton(
+                          onPressed: () => goTo(context, LoginPage.routeName),
+                          child: const Text('Log In'))
                       .expand()
                       .row(),
                 ],
@@ -73,7 +104,7 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  void _login(LoginMethod method) async {
+  void _signUp(LoginMethod method) async {
     if (!termsCondition.value) {
       infoToast('Please agree to the terms and conditions');
       return;
@@ -85,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
       if (rememberMe.value) TextInput.finishAutofillContext();
       formKey.currentState!.save();
     }
-    context.read<LoginBloc>().add(LoginAttemptEvent(method));
+    context.read<LoginBloc>().add(RegisterAttemptEvent(method));
   }
 
   Widget _form(LoginState state) {
@@ -116,7 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 controller: TextEditingController(),
                 onChanged: (value) =>
                     context.read<LoginBloc>().add(LoginPasswordChanged(value)),
-                onSubmit: (p0) => _login(
+                onSubmit: (p0) => _signUp(
                     EmailAuth(email: state.email, password: state.password)),
                 label: 'Password',
                 prefix: const Icon(Icons.lock),
@@ -147,7 +178,6 @@ class _SignUpPageState extends State<SignUpPage> {
                       const Text('Remember me'),
                     ],
                   ),
-                  const Text('Forgot password?').onTap(() {}, radius: 3),
                 ],
               ),
               Row(
@@ -172,6 +202,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => launchTermsAndConditions(context),
                         ),
                         const TextSpan(text: ' and '),
                         TextSpan(
@@ -180,6 +212,8 @@ class _SignUpPageState extends State<SignUpPage> {
                             color: Colors.blue,
                             decoration: TextDecoration.underline,
                           ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () => launchPrivacyPolicy(context),
                         ),
                       ],
                     ),
@@ -190,18 +224,6 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ),
       ),
-    );
-  }
-
-  Row _socialLogin() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Image.asset(MyPng.googleLogo, width: 30.w)
-            .onTap(() => _login(GoogleAuth())),
-        Image.asset(MyPng.appleLogo, width: 30.w).onTap(() {}),
-        Image.asset(MyPng.facebookLogo, width: 30.w).onTap(() {}),
-      ],
     );
   }
 }

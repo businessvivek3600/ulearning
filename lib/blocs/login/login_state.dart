@@ -1,43 +1,41 @@
 part of 'login_bloc.dart';
 
+enum LoginStatus { initial, loading, success, failure }
+
 @immutable
-abstract class LoginState {
-  final String? message;
+class LoginState extends Equatable {
   final String email;
   final String password;
+  final String? message;
+  final LoginStatus status;
 
   const LoginState({
     this.email = '',
     this.password = '',
     this.message,
+    this.status = LoginStatus.initial,
   });
 
   LoginState copyWith({
     String? email,
     String? password,
     String? message,
-  });
-}
-
-class LoginInitial extends LoginState {
-  const LoginInitial({
-    super.email,
-    super.password,
-    super.message,
-  });
-
-  @override
-  LoginInitial copyWith({
-    String? email,
-    String? password,
-    String? message,
+    LoginStatus? status,
   }) {
-    return LoginInitial(
+    return LoginState(
       email: email ?? this.email,
       password: password ?? this.password,
       message: message ?? this.message,
+      status: status ?? this.status,
     );
   }
+
+  @override
+  List<Object?> get props => [email, password, message, status];
+}
+
+class LoginInitial extends LoginState {
+  const LoginInitial() : super(status: LoginStatus.initial);
 }
 
 class LoginLoading extends LoginState {
@@ -45,20 +43,9 @@ class LoginLoading extends LoginState {
     super.email,
     super.password,
     super.message,
-  });
-
-  @override
-  LoginLoading copyWith({
-    String? email,
-    String? password,
-    String? message,
-  }) {
-    return LoginLoading(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      message: super.message,
-    );
-  }
+  }) : super(
+          status: LoginStatus.loading,
+        );
 }
 
 class LoginSuccess extends LoginState {
@@ -66,39 +53,17 @@ class LoginSuccess extends LoginState {
     super.email,
     super.password,
     super.message,
-  });
-
-  @override
-  LoginSuccess copyWith({
-    String? email,
-    String? password,
-    String? message,
-  }) {
-    return LoginSuccess(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      message: message ?? this.message,
-    );
-  }
+  }) : super(
+          status: LoginStatus.success,
+        );
 }
 
 class LoginFailure extends LoginState {
   const LoginFailure({
-    super.message,
     super.email,
     super.password,
-  });
-
-  @override
-  LoginFailure copyWith({
-    String? email,
-    String? password,
-    String? message,
-  }) {
-    return LoginFailure(
-      email: email ?? this.email,
-      password: password ?? this.password,
-      message: message ?? this.message,
-    );
-  }
+    super.message,
+  }) : super(
+          status: LoginStatus.failure,
+        );
 }

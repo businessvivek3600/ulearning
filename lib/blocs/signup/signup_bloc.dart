@@ -10,4 +10,6 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
       // TODO: implement event handler
     });
   }
+
+  Stream<SignupState> mapEventToState(SignupEvent event) async* {}
 }

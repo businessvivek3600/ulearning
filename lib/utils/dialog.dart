@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:ulearning_app/utils/extentions/index.dart';
@@ -45,8 +47,11 @@ Future<void> _getToast(
   bool autoDismiss = true,
 }) async {
   if (message.isEmpty) return;
+  message = message.trim().split('.').first;
   return SmartDialog.showToast(
     message,
+    usePenetrate: true,
+    displayType: SmartToastType.onlyRefresh,
     displayTime: Duration(milliseconds: duration),
     builder: (context) {
       return _ToastUI(message: message, type: type).fitted();
