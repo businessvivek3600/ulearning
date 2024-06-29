@@ -9,6 +9,7 @@ import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';
 
 import '../../../../blocs/auth/providers/providers.dart';
+import '../../../../routes/index.dart';
 import '../../../widgets/index.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -82,7 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       .expand()
                       .row(),
                   OutlinedButton(
-                          onPressed: () => goTo(context, LoginPage.routeName),
+                          onPressed: () => goTo(LoginPage.routeName),
                           child: const Text('Log In'))
                       .expand()
                       .row(),

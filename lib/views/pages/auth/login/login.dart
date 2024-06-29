@@ -10,6 +10,7 @@ import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';
 
 import '../../../../blocs/auth/providers/providers.dart';
+import '../../../../routes/index.dart';
 import '../../../widgets/index.dart';
 
 class LoginPage extends StatefulWidget {
@@ -30,6 +31,11 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         logg('AuthBloc listener ${state.status} : ${state.message}',
             name: 'LoginPage');
+        if (state.status == AuthStatus.loading) {
+          showLoading();
+        } else {
+          hideLoading();
+        }
         if (state.status == AuthStatus.success) {
           logg('User is logged in ${state.user?.toMap()}');
           successToast(state.message ?? "Success");
@@ -67,8 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                       .expand()
                       .row(),
                   OutlinedButton(
-                          onPressed: () =>
-                              pushTo(context, SignUpPage.routeName),
+                          onPressed: () => pushTo(SignUpPage.routeName),
                           child: const Text('Sign Up'))
                       .expand()
                       .row(),

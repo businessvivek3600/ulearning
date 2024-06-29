@@ -1,12 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ulearning_app/constants/img_const.dart';
 import 'package:ulearning_app/utils/extentions/index.dart';
-import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';
+
+import '../../../routes/index.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
@@ -27,7 +26,7 @@ class _WelcomeState extends State<Welcome> {
   void onPressed(List e, List i) {
     int index = e.indexOf(i);
     if (index == e.length - 1) {
-      pushTo(context, LoginPage.routeName);
+      pushTo(LoginPage.routeName);
     } else {
       _pageController.animateToPage(index + 1,
           duration: const Duration(milliseconds: 400), curve: Curves.easeIn);

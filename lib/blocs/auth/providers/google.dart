@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:ulearning_app/repository/firebase_repository.dart';
 
 import '../../../model/index.dart';
 import '../../../utils/extentions/index.dart';
@@ -43,14 +42,8 @@ class GoogleAuth extends SocialAuthProvider {
         phoneNumber: user.phoneNumber,
         emailVerified: user.emailVerified,
         authProviderName: 'Google',
-        createdAt: user.metadata.creationTime,
+        createdAt: user.metadata.creationTime?.toLocal().toString(),
       );
-      await FirebaseRepository.instance.setData(
-        collectionPath: 'users',
-        data: authUser.toMap(),
-        documentId: authUser.uid,
-      );
-
       // Return the user
       return AuthResult(
         success: true,
@@ -76,11 +69,10 @@ class GoogleAuth extends SocialAuthProvider {
 
   @override
   Future<AuthResult> loggout() async {
-    await FirebaseAuth.instance.signOut();
     await GoogleSignIn().signOut();
-    return AuthResult(
-      success: true,
-      message: 'Loggged out successfully',
-    );
+    return AuthResult.success();
   }
+
+  @override
+  String get providerName => 'Google';
 }

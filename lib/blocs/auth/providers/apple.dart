@@ -22,4 +22,7 @@ class AppleAuth extends SocialAuthProvider {
   Future<AuthResult> loggout() {
     throw UnimplementedError();
   }
+
+  @override
+  String get providerName => throw UnimplementedError();
 }

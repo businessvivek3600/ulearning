@@ -22,4 +22,8 @@ class FacebookAuth extends SocialAuthProvider {
   Future<AuthResult> loggout() {
     throw UnimplementedError();
   }
+  
+  @override
+  // TODO: implement providerName
+  String get providerName => throw UnimplementedError();
 }

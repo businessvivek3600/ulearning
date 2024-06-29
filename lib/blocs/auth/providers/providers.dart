@@ -7,6 +7,8 @@ export 'apple.dart';
 export 'google.dart';
 
 abstract class AuthProviderInterface {
+
+  String get providerName;
   Future<AuthResult> login();
 
   Future<AuthResult> loggout();

@@ -23,14 +23,10 @@ class EmailAuth extends AuthProviderInterface {
           name: res.user!.displayName,
           photoUrl: res.user!.photoURL,
           phoneNumber: res.user!.phoneNumber,
-          createdAt: res.user!.metadata.creationTime,
+          createdAt: res.user!.metadata.creationTime?.toLocal().toString(),
           authProviderName: 'Email',
         );
-        await FirebaseRepository.instance.setData(
-          collectionPath: 'users',
-          data: authUser.toMap(),
-          documentId: authUser.uid,
-        );
+
         return AuthResult(
           success: true,
           user: authUser,
@@ -76,7 +72,7 @@ class EmailAuth extends AuthProviderInterface {
           name: res.user!.displayName,
           photoUrl: res.user!.photoURL,
           phoneNumber: res.user!.phoneNumber,
-          createdAt: res.user!.metadata.creationTime,
+          createdAt: res.user!.metadata.creationTime?.toLocal().toString(),
           authProviderName: 'Email',
         );
         await FirebaseRepository.instance.setData(
@@ -100,4 +96,7 @@ class EmailAuth extends AuthProviderInterface {
     }
     return AuthResult(success: false, message: 'Something went wrong');
   }
+
+  @override
+  String get providerName => 'Email';
 }

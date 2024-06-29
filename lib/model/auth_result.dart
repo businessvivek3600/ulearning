@@ -2,13 +2,13 @@ import 'user_model.dart';
 
 class AuthResult {
   final bool success;
-  final String message;
+  String? message;
   final AuthUser? user;
 
-  AuthResult.success(this.user, [this.message = '']) : success = true;
-  AuthResult.failure([this.message = '', this.user]) : success = false;
+  AuthResult.success([this.user, this.message]) : success = true;
+  AuthResult.failure([this.message, this.user]) : success = false;
 
-  AuthResult({required this.success, required this.message, this.user});
+  AuthResult({required this.success, this.message = '', this.user});
 
   AuthResult copyWith({
     bool? success,

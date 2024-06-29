@@ -9,6 +9,9 @@ import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:ulearning_app/blocs/index.dart';
 import 'package:ulearning_app/firebase_options.dart';
+import 'package:ulearning_app/routes/route.dart';
+import 'package:ulearning_app/services/auth_service.dart';
+import 'package:ulearning_app/services/storage.dart';
 
 import 'views/pages/auth/login/auth_page.dart';
 import 'repository/auth_repository.dart';
@@ -18,7 +21,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await ScreenUtil.ensureScreenSize();
+  await StorageService.instance.init();
   Bloc.observer = MyBlocObserver();
+
+  /// user
+  await AuthService.instance.loadAuthSetup();
   TextInput.ensureInitialized();
 
   runApp(const MyApp());
@@ -40,14 +47,15 @@ class MyApp extends StatelessWidget {
             return BlocBuilder<ThemeBloc, ThemeState>(
               builder: (context, themeState) {
                 return MaterialApp(
-                  title: 'Ulearning App',
+                  title: 'Ulearning',
                   debugShowCheckedModeBanner: false,
                   themeAnimationCurve: Curves.fastLinearToSlowEaseIn,
                   themeMode: themeState.themeMode,
                   theme: themeState.themeData,
                   navigatorObservers: [FlutterSmartDialog.observer],
+                  navigatorKey: NavigationService.navigatorKey,
                   builder: FlutterSmartDialog.init(),
-                  initialRoute: LandingPage.routeName,
+                  initialRoute: Splash.routeName,
                   onGenerateRoute: (settings) {
                     switch (settings.name) {
                       case Splash.routeName:

@@ -80,7 +80,7 @@ class AuthUser {
   bool? emailVerified;
   List<String>? roles;
   String? phoneNumber;
-  DateTime? createdAt; // Converted to DateTime
+  String? createdAt;
   String? authProviderName;
 
   AuthUser({
@@ -110,7 +110,7 @@ class AuthUser {
       roles:
           (data?['roles'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
       phoneNumber: data?['phoneNumber'] as String?,
-      createdAt: (data?['createdAt'] as Timestamp?)?.toDate(),
+      createdAt: parseCreatedAt(data?['createdAt']),
       authProviderName: data?['authProviderName'] as String?,
     );
   }
@@ -126,7 +126,7 @@ class AuthUser {
       roles:
           (map['roles'] as List<dynamic>?)?.map((e) => e.toString()).toList(),
       phoneNumber: map['phoneNumber'] as String?,
-      createdAt: (map['createdAt'] as Timestamp?)?.toDate(),
+      createdAt: parseCreatedAt(map['createdAt']),
       authProviderName: map['authProviderName'] as String?,
     );
   }
@@ -155,7 +155,7 @@ class AuthUser {
     bool? emailVerified,
     List<String>? roles,
     String? phoneNumber,
-    DateTime? createdAt,
+    String? createdAt,
     String? authProviderName,
   }) {
     return AuthUser(
@@ -207,4 +207,13 @@ class AuthUser {
       phoneNumber.hashCode ^
       createdAt.hashCode ^
       authProviderName.hashCode;
+}
+
+String? parseCreatedAt(dynamic data) {
+  if (data is Timestamp) {
+    return data.toDate().toIso8601String();
+  } else if (data is DateTime) {
+    return data.toIso8601String();
+  }
+  return null;
 }

@@ -43,3 +43,12 @@ class AuthRegisterSubmitted extends AuthEvent {
   @override
   List<Object?> get props => [provider];
 }
+
+class AuthLogoutSubmitted extends AuthEvent {
+  final AuthProviderInterface provider;
+
+  const AuthLogoutSubmitted(this.provider);
+
+  @override
+  List<Object?> get props => [provider];
+}
