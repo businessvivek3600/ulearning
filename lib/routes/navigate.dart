@@ -1,7 +1,7 @@
 import 'package:ulearning_app/routes/route.dart';
 
 Future<T?> goTo<T extends Object?>(String name,
-    {Object? arg, bool replace = true}) async {
+    {Object? arg, bool replace = false}) async {
   return !replace
       ? NavigationService.navigatorKey.currentState
           ?.pushNamedAndRemoveUntil(name, (route) => false)

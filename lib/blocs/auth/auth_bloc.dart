@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ulearning_app/blocs/auth/providers/providers.dart';
-import 'package:ulearning_app/routes/route.dart';
 import 'package:ulearning_app/services/auth_service.dart';
 import 'package:ulearning_app/views/pages/index.dart';
 import '../../repository/auth_repository.dart';

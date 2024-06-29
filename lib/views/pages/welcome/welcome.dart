@@ -149,7 +149,7 @@ class _PageViewItem extends StatelessWidget {
 }
 
 class ClampingScrollPhysics extends ScrollPhysics {
-  const ClampingScrollPhysics({ScrollPhysics? parent}) : super(parent: parent);
+  const ClampingScrollPhysics({super.parent});
 
   @override
   ClampingScrollPhysics applyTo(ScrollPhysics? ancestor) {

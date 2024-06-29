@@ -16,13 +16,14 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _buildAppbar(context),
       body: Column(
         children: [
           Center(
             child: RichText(
               text: const TextSpan(
                 text: 'Welcome to ',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 10,
                   color: Colors.black,
                   leadingDistribution: TextLeadingDistribution.proportional,
@@ -49,5 +50,20 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     ).showDraggableWidget(const ThemeSwitch());
+  }
+
+  PreferredSize _buildAppbar(BuildContext context) {
+    return buildAppbar(
+      context,
+      transparent: true,
+      leading: IconButton(onPressed: () {}, icon: const Icon(Icons.menu)),
+      theme: true,
+      actions: [
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.person),
+        ),
+      ],
+    );
   }
 }

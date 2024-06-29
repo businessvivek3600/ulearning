@@ -20,8 +20,7 @@ class _SplashState extends State<Splash> {
   void initState() {
     super.initState();
     delay(200).then((_) async => AuthService.instance.isAuth).then((value) =>
-        goTo(value ? LandingPage.routeName : Welcome.routeName,
-            replace: false));
+        goTo(value ? LandingPage.routeName : Welcome.routeName));
   }
 
   @override
