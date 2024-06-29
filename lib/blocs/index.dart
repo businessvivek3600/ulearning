@@ -5,11 +5,13 @@ import 'auth/auth_bloc.dart';
 import 'signup/signup_bloc.dart';
 import 'welcome/welcome_bloc.dart';
 import 'theme/theme_bloc.dart';
+import 'app/app_bloc.dart';
 
 export 'auth/auth_bloc.dart';
 export 'signup/signup_bloc.dart';
 export 'welcome/welcome_bloc.dart';
 export 'theme/theme_bloc.dart';
+export 'app/app_bloc.dart';
 
 class Blocs {
   static List<BlocProvider> get blocs => [
@@ -17,6 +19,7 @@ class Blocs {
         BlocProvider<ThemeBloc>(create: (context) => ThemeBloc()),
         BlocProvider<SignupBloc>(create: (context) => SignupBloc()),
         BlocProvider<WelcomeBloc>(create: (context) => WelcomeBloc()),
+        BlocProvider<AppBloc>(create: (context) => AppBloc()),
       ];
 }
 

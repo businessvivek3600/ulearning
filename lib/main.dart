@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,15 +47,15 @@ class MyApp extends StatelessWidget {
                   theme: themeState.themeData,
                   navigatorObservers: [FlutterSmartDialog.observer],
                   builder: FlutterSmartDialog.init(),
-                  initialRoute: LoginPage.routeName,
+                  initialRoute: LandingPage.routeName,
                   onGenerateRoute: (settings) {
                     switch (settings.name) {
                       case Splash.routeName:
                         return route(const Splash(), settings: settings);
                       case Welcome.routeName:
                         return route(const Welcome(), settings: settings);
-                      case HomePage.routeName:
-                        return route(const HomePage(), settings: settings);
+                      case LandingPage.routeName:
+                        return route(const LandingPage(), settings: settings);
                       case LoginPage.routeName:
                         return route(const LoginPage(), settings: settings);
                       case SignUpPage.routeName:

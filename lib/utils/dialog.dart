@@ -1,43 +1,86 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:ulearning_app/utils/extentions/index.dart';
+
+enum ToastAlignment { top, topCenter, center, bottomCenter, bottom }
+
+extension on ToastAlignment {
+  double getYAlignment() {
+    switch (this) {
+      case ToastAlignment.top:
+        return -0.9;
+      case ToastAlignment.topCenter:
+        return -0.5;
+      case ToastAlignment.center:
+        return 0;
+      case ToastAlignment.bottomCenter:
+        return 0.5;
+      case ToastAlignment.bottom:
+        return 0.9;
+      default:
+        return 0;
+    }
+  }
+}
 
 successToast(
   String message, {
   int duration = 2000,
   bool autoDismiss = true,
+  ToastAlignment alignment = ToastAlignment.top,
 }) {
-  _getToast(message, _ToastType.success,
-      duration: duration, autoDismiss: autoDismiss);
+  _getToast(
+    message,
+    _ToastType.success,
+    duration: duration,
+    autoDismiss: autoDismiss,
+    alignment: alignment,
+  );
 }
 
 errorToast(
   String message, {
   int duration = 2000,
   bool autoDismiss = true,
+  ToastAlignment alignment = ToastAlignment.top,
 }) {
-  _getToast(message, _ToastType.error,
-      duration: duration, autoDismiss: autoDismiss);
+  _getToast(
+    message,
+    _ToastType.error,
+    duration: duration,
+    autoDismiss: autoDismiss,
+    alignment: alignment,
+  );
 }
 
 warningToast(
   String message, {
   int duration = 2000,
   bool autoDismiss = true,
+  ToastAlignment alignment = ToastAlignment.top,
 }) {
-  _getToast(message, _ToastType.warning,
-      duration: duration, autoDismiss: autoDismiss);
+  _getToast(
+    message,
+    _ToastType.warning,
+    duration: duration,
+    autoDismiss: autoDismiss,
+    alignment: alignment,
+  );
 }
 
 infoToast(
   String message, {
   int duration = 2000,
   bool autoDismiss = true,
+  ToastAlignment alignment = ToastAlignment.top,
 }) {
-  _getToast(message, _ToastType.info,
-      duration: duration, autoDismiss: autoDismiss);
+  _getToast(
+    message,
+    _ToastType.info,
+    duration: duration,
+    autoDismiss: autoDismiss,
+    alignment: alignment,
+  );
 }
 
 Future<void> _getToast(
@@ -45,12 +88,14 @@ Future<void> _getToast(
   _ToastType type, {
   int duration = 2000,
   bool autoDismiss = true,
+  ToastAlignment alignment = ToastAlignment.top,
 }) async {
   if (message.isEmpty) return;
   message = message.trim().split('.').first;
   return SmartDialog.showToast(
     message,
     usePenetrate: true,
+    alignment: Alignment(0, alignment.getYAlignment()),
     displayType: SmartToastType.onlyRefresh,
     displayTime: Duration(milliseconds: duration),
     builder: (context) {

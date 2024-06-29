@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:ulearning_app/views/widgets/index.dart';
 
 extension WidgetExt on Widget {
   Widget sized(double s) => SizedBox(width: s, height: s, child: this);
@@ -205,4 +206,6 @@ extension WidgetExt on Widget {
         keyboardDismissBehavior: keyboardDismissBehavior,
         child: this,
       );
+
+  Widget showDraggableWidget(Widget child) => DraggableFloatingWidget(child: this, floatingWidget: child);
 }
