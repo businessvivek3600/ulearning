@@ -1,5 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ulearning_app/views/widgets/index.dart';
 
 extension WidgetExt on Widget {
@@ -105,6 +107,26 @@ extension WidgetExt on Widget {
   Widget elevation(double elevation) =>
       Material(elevation: elevation, child: this);
 
+  Widget clipRoundRect(double radius) =>
+      ClipRRect(borderRadius: BorderRadius.circular(radius), child: this);
+
+  Widget clipRoundRectOnly(
+          {double topLeft = 0,
+          double topRight = 0,
+          double bottomLeft = 0,
+          double bottomRight = 0}) =>
+      ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(topLeft),
+          topRight: Radius.circular(topRight),
+          bottomLeft: Radius.circular(bottomLeft),
+          bottomRight: Radius.circular(bottomRight),
+        ),
+        child: this,
+      );
+
+  Widget clipOval() => ClipOval(child: this);
+
   Widget shadow(
       {Color color = Colors.black,
       double blurRadius = 10,
@@ -127,22 +149,96 @@ extension WidgetExt on Widget {
 
   Widget onTap(
     VoidCallback onTap, {
-    double radius = 100,
-  }) =>
-      Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          // splashColor: Colors.blue.withOpacity(0.3),
-          borderRadius: BorderRadius.circular(radius),
-          child: Container(
-            decoration: BoxDecoration(
+    double radius = 16.0,
+    Color? splashColor,
+    Color? highlightColor,
+    Color? hoverColor,
+    Color? focusColor,
+    double elevation = 0.0,
+    EdgeInsets padding = const EdgeInsets.all(0.0),
+    BorderSide? border,
+    Color? backgroundColor,
+    bool shrinkOnTap = true,
+    bool vibrateOnTap = true,
+    bool showHaptic = true,
+    bool showHover = true,
+    bool showFocus = true,
+    bool soundOnTap = true,
+  }) {
+    return DynamicButton(
+      onTap: onTap,
+      radius: radius,
+      splashColor: splashColor,
+      highlightColor: highlightColor,
+      hoverColor: hoverColor,
+      focusColor: focusColor,
+      elevation: elevation,
+      padding: padding,
+      border: border,
+      backgroundColor: backgroundColor,
+      shrinkOnTap: shrinkOnTap,
+      vibrateOnTap: vibrateOnTap,
+      showHaptic: showHaptic,
+      showHover: showHover,
+      showFocus: showFocus,
+      soundOnTap: soundOnTap,
+      child: this,
+    );
+    return Builder(builder: (context) {
+      splashColor ??= Theme.of(context).splashColor;
+
+      return GestureDetector(
+        onTap: () {
+          if (shrinkOnTap) {
+            // Trigger shrinking animation
+            ScaleTransition(
+              scale: const AlwaysStoppedAnimation(0.95),
+              child: this,
+            );
+          }
+          if (vibrateOnTap && !kIsWeb) {
+            HapticFeedback.vibrate();
+          }
+          if (showHaptic && !kIsWeb) {
+            HapticFeedback.lightImpact();
+          }
+          if (soundOnTap) {
+            // Add sound effect here if required
+          }
+          onTap();
+        },
+        child: MouseRegion(
+          onEnter: showHover ? (event) => SystemMouseCursors.click : null,
+          child: FocusableActionDetector(
+            autofocus: showFocus,
+            child: Material(
+              color: Colors.transparent,
+              elevation: elevation,
               borderRadius: BorderRadius.circular(radius),
+              child: InkWell(
+                onTap: onTap,
+                splashColor: splashColor?.withOpacity(0.3),
+                highlightColor: highlightColor?.withOpacity(0.2),
+                hoverColor: hoverColor,
+                focusColor: focusColor,
+                borderRadius: BorderRadius.circular(radius),
+                child: Container(
+                  padding: padding,
+                  decoration: BoxDecoration(
+                    color: backgroundColor,
+                    borderRadius: BorderRadius.circular(radius),
+                    border:
+                        border != null ? Border.fromBorderSide(border) : null,
+                  ),
+                  child: Center(child: this),
+                ),
+              ),
             ),
-            child: Center(child: this),
           ),
         ),
       );
+    });
+  }
 
   Widget onLongPress(VoidCallback onLongPress) =>
       GestureDetector(onLongPress: onLongPress, child: this);
@@ -207,5 +303,25 @@ extension WidgetExt on Widget {
         child: this,
       );
 
-  Widget showDraggableWidget(Widget child) => DraggableFloatingWidget(child: this, floatingWidget: child);
+  Widget showDraggableWidget(Widget child) =>
+      DraggableFloatingWidget(floatingWidget: child, child: this);
+
+  Widget rotate(double angle) => Transform.rotate(angle: angle, child: this);
+
+  Widget scale(double scale) => Transform.scale(scale: scale, child: this);
+
+  Widget translate(double x, double y) =>
+      Transform.translate(offset: Offset(x, y), child: this);
+
+  Widget mirrorY() => Transform.scale(scale: -1, child: this);
+
+  Widget mirrorX() => Transform.scale(scale: -1, child: this);
+
+  Widget rotate90() => Transform.rotate(angle: 1.5708, child: this);
+
+  Widget rotate45() => Transform.rotate(angle: 0.785398, child: this);
+
+  Widget rotate180() => Transform.rotate(angle: 3.14159, child: this);
+
+  Widget rotate270() => Transform.rotate(angle: 4.71239, child: this);
 }

@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ulearning_app/blocs/index.dart';
-import 'package:ulearning_app/constants/img_const.dart';
+import 'package:ulearning_app/constants/asset_const.dart';
 import 'package:ulearning_app/utils/extentions/index.dart';
 import 'package:ulearning_app/utils/index.dart';
 import 'package:ulearning_app/views/pages/index.dart';

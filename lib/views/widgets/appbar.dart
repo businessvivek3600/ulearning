@@ -42,7 +42,7 @@ PreferredSize transparentAppBar(
 /// Global appbar
 PreferredSize buildAppbar(
   BuildContext context, {
-  String? title,
+  dynamic title,
   double? elevation,
   double? height,
   bool theme = false,
@@ -50,12 +50,15 @@ PreferredSize buildAppbar(
   bool transparent = false,
   Widget? leading,
   List<Widget>? actions,
+  Color? textColor,
 }) {
   SystemUiOverlayStyle systemOverlayStyle = transparent
       ? context.isDark
           ? SystemUiOverlayStyle.light
           : SystemUiOverlayStyle.dark
       : SystemUiOverlayStyle.light;
+  textColor = textColor ??
+      (context.isDark || !transparent ? Colors.white : Colors.black);
   return PreferredSize(
     preferredSize: Size.fromHeight(height ?? 56),
     child: AppBar(
@@ -64,7 +67,17 @@ PreferredSize buildAppbar(
       ),
       toolbarHeight: height ?? 56,
       centerTitle: centerTile,
-      title: title != null ? Text(title) : null,
+      title: title != null
+          ? title is String
+              ? Text(
+                  title,
+                  style:
+                      context.textTheme.titleLarge?.copyWith(color: textColor),
+                )
+              : title is Widget
+                  ? title
+                  : null
+          : null,
       leading: leading,
       systemOverlayStyle: systemOverlayStyle,
       backgroundColor: transparent

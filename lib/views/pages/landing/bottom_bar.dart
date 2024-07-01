@@ -12,14 +12,36 @@ class _LandingBottomBarState extends State<LandingBottomBar> {
     context.read<AppBloc>().add(AppChangeBottomNavEvent(index));
   }
 
+  dynamic getIcon(String icon) {
+    String img = '';
+    switch (icon) {
+      case 'home':
+        img = MyPng.home;
+      case 'search':
+        img = MyPng.search;
+      case 'play':
+        img = MyPng.play;
+      case 'chat':
+        img = MyPng.chat;
+      case 'profile':
+        img = MyPng.profile;
+      default:
+        img = MyPng.home;
+    }
+    return Image.asset(
+      img,
+      width: 35,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    const List<TabItem> items = [
-      TabItem(icon: Icons.home),
-      TabItem(icon: Icons.search_sharp),
-      TabItem(icon: Icons.play_arrow_rounded),
-      TabItem(icon: Icons.chat_bubble_rounded),
-      TabItem(icon: Icons.person_rounded),
+    List<TabItem> items = [
+      const TabItem(icon: Iconic.home),
+      const TabItem(icon: Iconic.search),
+      const TabItem(icon: Iconic.comment),
+      const TabItem(icon: Iconic.play),
+      const TabItem(icon: Iconic.user),
     ];
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {

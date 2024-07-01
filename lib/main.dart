@@ -11,6 +11,7 @@ import 'package:ulearning_app/blocs/index.dart';
 import 'package:ulearning_app/firebase_options.dart';
 import 'package:ulearning_app/routes/route.dart';
 import 'package:ulearning_app/services/auth_service.dart';
+import 'package:ulearning_app/services/button_sound_services.dart';
 import 'package:ulearning_app/services/storage.dart';
 
 import 'views/pages/auth/login/auth_page.dart';
@@ -22,11 +23,17 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await ScreenUtil.ensureScreenSize();
   await StorageService.instance.init();
+  ButtonSoundServices.init();
+  
   Bloc.observer = MyBlocObserver();
 
   /// user
   await AuthService.instance.loadAuthSetup();
+
+
+  /// device
   TextInput.ensureInitialized();
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
   runApp(const MyApp());
 }

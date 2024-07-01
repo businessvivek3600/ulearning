@@ -25,6 +25,10 @@ dependencies:
   provider: ^6.1.2
   awesome_bottom_bar: ^1.2.4
   shared_preferences: ^2.2.3
+  iconic: ^0.1.0
+  vibration: ^1.9.0
+  just_audio: ^0.9.38
+  card_swiper: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -37,6 +41,8 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/icons/
+    - assets/sounds/
 
   fonts:
     - family: RobotoSerif

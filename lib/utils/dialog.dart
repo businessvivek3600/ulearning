@@ -8,7 +8,7 @@ extension on ToastAlignment {
   double getYAlignment() {
     switch (this) {
       case ToastAlignment.top:
-        return -0.9;
+        return -0.8;
       case ToastAlignment.topCenter:
         return -0.5;
       case ToastAlignment.center:
