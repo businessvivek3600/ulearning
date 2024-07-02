@@ -26,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
             _profile(context),
             const SizedBox(height: heightSmall),
             _courseBuyRatingsTiles(context),
-            const SizedBox(height: heightSmall),
+            const SizedBox(height: paddingDefault * 2),
             _actionTiles(context),
             // const SizedBox(height: heightSmall),
             // _profileActions(context),
@@ -45,8 +45,6 @@ class _ProfilePageState extends State<ProfilePage> {
     return Column(
       children: [
         _actionTile(context, Iconic.settings_solid, 'Settings', () {}),
-
-        ///payment details, achievements, favorites, learning reminders
         _actionTile(
             context, Iconic.credit_card_solid, 'Payment Details', () {}),
         _actionTile(context, Iconic.trophy_solid, 'Achievements', () {}),
@@ -91,6 +89,7 @@ class _ProfilePageState extends State<ProfilePage> {
       //     maxCrossAxisExtent: 100, mainAxisSpacing: paddingSmall.w),
       children: [
         Container(
+          width: context.screenSize.width / 3,
           decoration: BoxDecoration(
             color: context.theme.primaryColor,
             borderRadius: BorderRadius.circular(borderRadiusDefault),
@@ -107,9 +106,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ).fitted().paddingAll(paddingSmall / 2),
-        ).expand(),
+        ).onTap(() {}).expand(),
         paddingSmall.width,
         Container(
+          width: context.screenSize.width / 3,
           decoration: BoxDecoration(
             color: context.theme.primaryColor,
             borderRadius: BorderRadius.circular(borderRadiusDefault),
@@ -126,9 +126,10 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ).fitted().paddingSymmetric(vertical: paddingSmall / 2),
-        ).expand(),
+        ).onTap(() {}).expand(),
         paddingSmall.width,
         Container(
+          width: context.screenSize.width / 3,
           decoration: BoxDecoration(
             color: context.theme.primaryColor,
             borderRadius: BorderRadius.circular(borderRadiusDefault),
@@ -145,7 +146,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ],
           ).fitted().paddingAll(paddingSmall / 2),
-        ).expand(),
+        ).onTap(() {}).expand(),
       ],
     ).size(height: 50.h);
   }
@@ -158,7 +159,9 @@ class _ProfilePageState extends State<ProfilePage> {
             CircleAvatar(
               backgroundColor: context.theme.primaryColor.withOpacity(0.005),
               radius: 30.w,
-              backgroundImage: AssetImage(MyPng.profile),
+              backgroundImage: const NetworkImage(
+                'https://lh3.googleusercontent.com/a-/AOh14GhCpmeHdwyiGTjusea5wnu1yEQltH5vTADhg1j8Og=s600-k-no-rp-mo',
+              ),
             ),
             Positioned(
               bottom: 0,
